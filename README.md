@@ -7,10 +7,13 @@ Entorno local completo de n8n con base de datos PostgreSQL, respaldado por runne
 ```
 .
 ├── docker-compose.yml      # Configuración de servicios
-├── init-data.sh            # Script de inicialización Postgres
+├── scripts/                # Scripts de utilidad
+│   ├── init-data.sh        # Inicialización de DB (Postgres)
+│   └── update-n8n.sh       # Script de actualización y backup
 ├── .env                    # Variables de entorno (con secretos)
 ├── .env.example            # Template para .env (sin secretos)
-└── .gitignore             # Excluye .env de git
+├── backups/                # Directorio de respaldos automáticos
+└── .gitignore              # Exclusión de archivos sensibles
 ```
 
 ## Servicios
@@ -18,7 +21,6 @@ Entorno local completo de n8n con base de datos PostgreSQL, respaldado por runne
 - **postgres:16** — Base de datos PostgreSQL con volumen persistente
 - **n8n** — Interfaz web y API en `http://localhost:5678`
 - **n8n-runner** — Task runner externo (recomendado para ejecución de workflows)
-- **adminer** — Admin web para PostgreSQL en `http://localhost:8080` (opcional)
 
 ## Primeros pasos
 
@@ -57,21 +59,6 @@ http://localhost:5678
 
 La primera vez te pedirá crear una cuenta de usuario.
 
-### 4. Acceder a Adminer (opcional)
-
-Para administrar la base de datos PostgreSQL:
-
-```
-http://localhost:8080
-```
-
-**Login:**
-- Sistema: PostgreSQL
-- Servidor: `postgres` (nombre del servicio en Docker)
-- Usuario: `user` (o `admin` si prefieres usar el admin)
-- Contraseña: La que configuraste en `.env` (`POSTGRES_NON_ROOT_PASSWORD`)
-- Base de datos: `n8n`
-
 ## Comandos útiles
 
 ```bash
@@ -91,9 +78,12 @@ docker-compose logs postgres
 # Acceder a la terminal de Postgres
 docker-compose exec postgres psql -U n8n_admin -d n8n
 
-# Actualizar imágenes Docker
+# Actualizar imágenes Docker (manual)
 docker-compose pull
 docker-compose up -d
+
+# Actualizar usando el script (recomendado: hace backup previo)
+./scripts/update-n8n.sh
 ```
 
 ## Variables de entorno
@@ -117,7 +107,6 @@ docker-compose up -d
 ## Puertos
 
 - `5678` → n8n web UI y API
-- `8080` → Adminer (admin web para PostgreSQL)
 - `5679` → n8n task runner broker (solo red interna)
 - `5432` → PostgreSQL (solo red interna)
 

@@ -1,8 +1,16 @@
+# Configuración y Secretos
 .env
 .env.local
 .env.*.local
-node_modules/
-dist/
-build/
+
+# Docker y Datos
+backups/
+
+# Logs y Temporales
 *.log
 .DS_Store
+
+# Dependencias y Build (si aplica)
+node_modules/
+dist/
+build/
